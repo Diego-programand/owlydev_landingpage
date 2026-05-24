@@ -8,15 +8,6 @@ const config: Config = {
     "./hooks/**/*.{ts,tsx}",
     "./lib/**/*.{ts,tsx}",
   ],
-  theme: {
-    extend: {
-      fontFamily: {
-        sans: ["var(--font-jakarta)", "system-ui", "sans-serif"],
-        display: ["var(--font-outfit)", "system-ui", "sans-serif"],
-      },
-    },
-  },
-  plugins: [],
 };
 
 export default config;
