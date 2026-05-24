@@ -1,252 +1,280 @@
-"use client";
+'use client'
 
-import Image from "next/image";
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { navItems } from "@/lib/site";
-import { useActiveSection } from "@/hooks/useActiveSection";
-import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, ArrowRight } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { useMemo, useState, useEffect } from 'react'
+import Image from 'next/image'
+import { useRouter, usePathname } from 'next/navigation'
+import { useLocale, useTranslations } from 'next-intl'
+import { motion, AnimatePresence, useScroll, useMotionValueEvent } from 'framer-motion'
+import { Menu, X } from 'lucide-react'
+import { navItems } from '@/lib/site'
+import { useActiveSection } from '@/hooks/useActiveSection'
+import { routing } from '@/i18n/routing'
+import { cn } from '@/lib/utils'
 
-function scrollToId(id: string) {
-  const el = document.getElementById(id);
-  if (!el) return;
-  const offset = 85;
-  const bodyRect = document.body.getBoundingClientRect().top;
-  const elementRect = el.getBoundingClientRect().top;
-  const elementPosition = elementRect - bodyRect;
-  const offsetPosition = elementPosition - offset;
+const EASE_OUT_EXPO = [0.16, 1, 0.3, 1] as const
+const NAV_LINKS = navItems.filter((item) => item.id !== 'contact')
 
-  window.scrollTo({
-    top: offsetPosition,
-    behavior: "smooth"
-  });
+function scrollToSection(id: string) {
+  const el = document.getElementById(id)
+  if (!el) return
+  const top = el.getBoundingClientRect().top + window.scrollY - 80
+  window.scrollTo({ top, behavior: 'smooth' })
+}
+
+function LanguageToggle() {
+  const locale = useLocale()
+  const router = useRouter()
+  const pathname = usePathname()
+
+  function switchLocale(newLocale: 'es' | 'en') {
+    if (newLocale === locale) return
+    const newPath =
+      newLocale === routing.defaultLocale
+        ? pathname.replace(/^\/en/, '') || '/'
+        : `/en${pathname}`
+    router.push(newPath)
+    router.refresh()
+  }
+
+  return (
+    <div className="flex items-center gap-1.5">
+      <button
+        onClick={() => switchLocale('es')}
+        className={cn(
+          'text-[13px] transition-colors duration-[120ms]',
+          locale === 'es'
+            ? 'font-medium text-[var(--color-ink-secondary)]'
+            : 'font-normal text-[var(--color-ink-quaternary)] hover:text-[var(--color-ink-tertiary)]'
+        )}
+      >
+        ES
+      </button>
+      <span aria-hidden className="select-none text-[13px] text-[var(--color-ink-quaternary)] opacity-40">
+        /
+      </span>
+      <button
+        onClick={() => switchLocale('en')}
+        className={cn(
+          'text-[13px] transition-colors duration-[120ms]',
+          locale === 'en'
+            ? 'font-medium text-[var(--color-ink-secondary)]'
+            : 'font-normal text-[var(--color-ink-quaternary)] hover:text-[var(--color-ink-tertiary)]'
+        )}
+      >
+        EN
+      </button>
+    </div>
+  )
 }
 
 export default function Navbar() {
-  const ids = useMemo(() => navItems.map((n) => n.id), [navItems]);
-  const active = useActiveSection(ids, 96);
-  const [scrolled, setScrolled] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const ids = useMemo(() => navItems.map((n) => n.id), [])
+  const active = useActiveSection(ids, 96)
+  const [scrolled, setScrolled] = useState(false)
+  const [mobileOpen, setMobileOpen] = useState(false)
+  const locale = useLocale()
+  const t = useTranslations('nav')
+  const { scrollY } = useScroll()
+
+  const whatsappUrl =
+    locale === 'en'
+      ? "https://wa.me/573028584906?text=Hi%2C+I'd+like+to+know+more+about+OwlyDev"
+      : 'https://wa.me/573028584906?text=Hola%2C+quiero+saber+m%C3%A1s+sobre+OwlyDev'
+
+  useMotionValueEvent(scrollY, 'change', (v) => setScrolled(v > 80))
 
   useEffect(() => {
-    if (mobileMenuOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
+    document.body.style.overflow = mobileOpen ? 'hidden' : ''
+    return () => {
+      document.body.style.overflow = ''
     }
-  }, [mobileMenuOpen]);
+  }, [mobileOpen])
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 10);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
-  const itemRefs = useRef<Record<string, HTMLAnchorElement | null>>({});
-  const [indicator, setIndicator] = useState({ left: 0, width: 0, opacity: 0 });
-
-  useLayoutEffect(() => {
-    const activeEl = itemRefs.current[active];
-    if (activeEl && active !== "contact") {
-      setIndicator({
-        left: activeEl.offsetLeft,
-        width: activeEl.offsetWidth,
-        opacity: 1
-      });
-    } else {
-      setIndicator(prev => ({ ...prev, opacity: 0 }));
+    const onResize = () => {
+      if (window.innerWidth >= 1024) setMobileOpen(false)
     }
-  }, [active, scrolled]);
+    window.addEventListener('resize', onResize)
+    return () => window.removeEventListener('resize', onResize)
+  }, [])
 
   return (
     <>
-      <motion.header
-        initial={{ y: -100 }}
-        animate={{ y: 0 }}
+      <header
         className={cn(
-          "fixed inset-x-0 top-0 z-[60] transition-all duration-300",
-          scrolled || mobileMenuOpen
-            ? "py-3 bg-[#030712]/80 backdrop-blur-xl border-b border-white/5"
-            : "py-5 bg-transparent border-b border-transparent"
+          'fixed inset-x-0 top-0 z-50 h-16 xl:h-18 transition-[background-color,border-color] duration-[320ms] [transition-timing-function:var(--ease-out-quart)]',
+          scrolled || mobileOpen
+            ? 'border-b border-[var(--color-border-subtle)] bg-[oklch(0.97_0.015_264/0.92)] backdrop-blur-[8px]'
+            : 'border-b border-transparent bg-transparent'
         )}
       >
-        <div className="mx-auto max-w-7xl px-4">
-          <div className="flex h-16 items-center justify-between">
+        <div className="mx-auto flex h-full max-w-[var(--max-page)] items-center justify-between px-6 lg:px-8">
 
-            {/* LOGOTIPO OWLYDEV */}
-            <motion.button
-              onClick={() => { setMobileMenuOpen(false); scrollToId("hero"); }}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              className="flex items-center gap-2.5 group relative z-[70]"
-            >
-              <div className="relative w-8 h-10 flex items-center justify-center">
-                <Image
-                  src="/branding/iso-tipo.webp"
-                  alt="Logo OwlyDev - Desarrollo de Software en Medellín"
-                  width={32}
-                  height={40}
-                  className="object-contain transition-transform group-hover:rotate-6"
-                  priority
-                />
-              </div>
-              <span className="font-display text-lg font-bold">
-                <span className="text-white">Owly</span>
-                <span className="bg-gradient-to-r from-[#23ADCF] to-[#0062cc] bg-clip-text text-transparent">Dev</span>
-              </span>
-            </motion.button>
+          {/* Logo */}
+          <button
+            onClick={() => {
+              setMobileOpen(false)
+              scrollToSection('hero')
+            }}
+            aria-label="Ir al inicio"
+            className="flex items-center focus-visible:outline-none"
+          >
+            <Image
+              src="/branding/logo.webp"
+              alt="OwlyDev"
+              width={140}
+              height={36}
+              priority
+              className="h-9 w-auto"
+            />
+          </button>
 
-            {/* NAV DESKTOP (LG+): FOCO EN SECCIÓN ACTIVA */}
-            <nav className="relative hidden lg:flex items-center gap-1 p-1 rounded-xl bg-white/5 border border-white/5">
-              {navItems
-                .filter((item) => item.id !== "contact")
-                .map((item) => {
-                  const isActive = active === item.id;
-                  return (
-                    <a
-                      key={item.id}
-                      href={`#${item.id}`}
-                      ref={(node) => { itemRefs.current[item.id] = node; }}
-                      onClick={(e) => { e.preventDefault(); scrollToId(item.id); }}
-                      title={`Ir a sección de ${item.label}`}
-                      className={cn(
-                        "relative px-5 py-2.5 text-[11px] uppercase tracking-widest transition-all duration-500 z-10 flex items-center h-full",
-                        isActive
-                          ? "text-white font-black scale-105"
-                          : "text-white/40 font-bold hover:text-white"
-                      )}
-                    >
-                      {item.label}
-                    </a>
-                  );
-                })}
-
-              <motion.span
-                className="absolute bottom-1 h-0.5 rounded-full bg-gradient-to-r from-[#23ADCF] to-[#0062cc] shadow-[0_0_15px_rgba(35,173,207,0.8)]"
-                animate={{
-                  left: indicator.left,
-                  width: indicator.width,
-                  opacity: indicator.opacity,
+          {/* Desktop nav */}
+          <nav aria-label="Navegación principal" className="hidden items-center gap-0.5 lg:flex">
+            {NAV_LINKS.map((item) => (
+              <a
+                key={item.id}
+                href={`#${item.id}`}
+                onClick={(e) => {
+                  e.preventDefault()
+                  scrollToSection(item.id)
                 }}
-                transition={{ type: "spring", stiffness: 350, damping: 30 }}
-              />
-            </nav>
-
-            {/* BOTONES DERECHA */}
-            <div className="flex items-center gap-3">
-              <motion.a
-                href="#contact"
-                onClick={(e: React.MouseEvent<HTMLAnchorElement>) => { e.preventDefault(); scrollToId("contact"); }}
-                title="Ir a formulario de contacto web"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="hidden lg:inline-flex px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#23ADCF] to-[#0062cc] text-white text-[11px] font-black uppercase tracking-widest shadow-lg shadow-[#23ADCF]/20 hover:shadow-[#23ADCF]/40 transition-shadow"
+                className="relative px-3 py-1.5 text-[14px] text-[var(--color-ink-secondary)] transition-colors duration-[120ms] hover:text-[var(--color-ink-primary)]"
               >
-                Contacto
-              </motion.a>
+                {t(item.id as Parameters<typeof t>[0])}
+                {active === item.id && (
+                  <motion.div
+                    layoutId="nav-indicator"
+                    className="absolute inset-x-3 -bottom-px h-[2px] rounded-[1px] bg-[var(--color-ink-secondary)]"
+                    transition={{ duration: 0.25, ease: EASE_OUT_EXPO }}
+                  />
+                )}
+              </a>
+            ))}
+          </nav>
 
-              {/* Toggle Menu Mobile (Visible < LG) */}
-              <motion.button
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                whileTap={{ scale: 0.95 }}
-                className="lg:hidden relative z-[70] px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-white hover:bg-white/10 transition-colors flex items-center gap-2"
-              >
-                <span className="text-[10px] font-black uppercase tracking-[0.15em] text-white/90">
-                  {mobileMenuOpen ? "Cerrar" : "Menú"}
-                </span>
-                <AnimatePresence mode="wait">
-                  {mobileMenuOpen ? (
-                    <motion.div
-                      key="close"
-                      initial={{ rotate: -90, opacity: 0 }}
-                      animate={{ rotate: 0, opacity: 1 }}
-                      exit={{ rotate: 90, opacity: 0 }}
-                    >
-                      <X className="w-4 h-4" />
-                    </motion.div>
-                  ) : (
-                    <motion.div
-                      key="menu"
-                      initial={{ rotate: 90, opacity: 0 }}
-                      animate={{ rotate: 0, opacity: 1 }}
-                      exit={{ rotate: -90, opacity: 0 }}
-                    >
-                      <Menu className="w-5 h-5" />
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </motion.button>
+          {/* Right controls */}
+          <div className="flex items-center gap-4">
+            {/* Language toggle — desktop */}
+            <div className="hidden lg:flex">
+              <LanguageToggle />
             </div>
+
+            {/* NavCTA — desktop */}
+            <a
+              href={whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hidden rounded-lg border border-[var(--color-border-strong)] px-4 py-2 text-[13px] font-medium text-[var(--color-ink-secondary)] transition-[border-color,background-color] duration-[220ms] [transition-timing-function:var(--ease-out-quart)] hover:border-[var(--color-ink-secondary)] hover:bg-[var(--color-surface-raised)] lg:inline-flex"
+            >
+              {t('cta')}
+            </a>
+
+            {/* Hamburger — mobile */}
+            <button
+              onClick={() => setMobileOpen(!mobileOpen)}
+              aria-label={mobileOpen ? 'Cerrar menú' : 'Abrir menú'}
+              aria-expanded={mobileOpen}
+              aria-controls="mobile-menu"
+              className="flex items-center justify-center rounded-lg p-2 text-[var(--color-ink-secondary)] transition-colors duration-[120ms] hover:bg-[var(--color-surface-recessed)] lg:hidden"
+            >
+              <AnimatePresence mode="wait" initial={false}>
+                {mobileOpen ? (
+                  <motion.div
+                    key="close"
+                    initial={{ rotate: -90, opacity: 0 }}
+                    animate={{ rotate: 0, opacity: 1 }}
+                    exit={{ rotate: 90, opacity: 0 }}
+                    transition={{ duration: 0.15 }}
+                  >
+                    <X size={20} strokeWidth={1.5} />
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="menu"
+                    initial={{ rotate: 90, opacity: 0 }}
+                    animate={{ rotate: 0, opacity: 1 }}
+                    exit={{ rotate: -90, opacity: 0 }}
+                    transition={{ duration: 0.15 }}
+                  >
+                    <Menu size={20} strokeWidth={1.5} />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </button>
           </div>
         </div>
-      </motion.header>
+      </header>
 
-      {/* MENU MÓVIL: FULL SCREEN PREMIUM OVERLAY */}
+      {/* Mobile menu */}
       <AnimatePresence>
-        {mobileMenuOpen && (
+        {mobileOpen && (
           <motion.div
-            initial={{ opacity: 0, clipPath: "circle(0% at 100% 0%)" }}
-            animate={{ opacity: 1, clipPath: "circle(150% at 100% 0%)" }}
-            exit={{ opacity: 0, clipPath: "circle(0% at 100% 0%)" }}
-            transition={{ type: "spring", damping: 25, stiffness: 100 }}
-            className="fixed inset-0 z-[65] bg-[#030712] lg:hidden flex flex-col justify-center items-center h-[100dvh]"
+            id="mobile-menu"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Menú de navegación"
+            initial={{ y: '-100%' }}
+            animate={{ y: 0 }}
+            exit={{ y: '-100%' }}
+            transition={{ duration: 0.4, ease: EASE_OUT_EXPO }}
+            className="fixed inset-x-0 top-0 z-40 flex h-[100dvh] flex-col bg-[var(--color-surface-base)] pt-16 lg:hidden"
           >
-            {/* Background Gradients */}
-            <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-[#23ADCF]/20 rounded-full blur-[100px] pointer-events-none" />
-            <div className="absolute bottom-0 left-0 w-[300px] h-[300px] bg-[#0062cc]/20 rounded-full blur-[100px] pointer-events-none" />
-
-            <nav className="relative z-10 flex flex-col gap-6 w-full max-w-xs px-6">
-              {navItems.map((item, index) => {
-                const isActive = active === item.id;
-                return (
-                  <motion.button
-                    key={item.id}
-                    initial={{ opacity: 0, y: 30 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.1 + index * 0.1, type: "spring", stiffness: 300, damping: 20 }}
-                    onClick={() => { setMobileMenuOpen(false); setTimeout(() => scrollToId(item.id), 300); }}
-                    className={cn(
-                      "group flex items-center justify-between py-2 text-3xl font-display font-medium transition-all duration-300",
-                      isActive
-                        ? "text-white"
-                        : "text-white/30 hover:text-white"
-                    )}
-                  >
-                    <span className="relative text-start">
-                      {item.label}
-                      {isActive && (
-                        <motion.div
-                          layoutId="mobileActiveLine"
-                          className="absolute -left-6 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-[#23ADCF]"
-                        />
-                      )}
-                    </span>
-                    <ArrowRight className={cn(
-                      "w-6 h-6 transform transition-all duration-300 group-hover:translate-x-2",
-                      isActive ? "text-[#23ADCF] opacity-100" : "opacity-0 group-hover:opacity-100 group-hover:text-white"
-                    )} />
-                  </motion.button>
-                );
-              })}
+            <nav className="flex flex-col px-6 py-6">
+              {navItems.map((item, i) => (
+                <motion.a
+                  key={item.id}
+                  href={`#${item.id}`}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{
+                    duration: 0.3,
+                    ease: EASE_OUT_EXPO,
+                    delay: 0.08 + i * 0.04,
+                  }}
+                  onClick={(e) => {
+                    e.preventDefault()
+                    setMobileOpen(false)
+                    setTimeout(() => scrollToSection(item.id), 300)
+                  }}
+                  className={cn(
+                    'relative border-b border-[var(--color-border-subtle)] py-4 text-[18px] transition-colors duration-[120ms] last:border-b-0',
+                    active === item.id
+                      ? 'font-medium text-[var(--color-ink-primary)] pl-4'
+                      : 'font-normal text-[var(--color-ink-tertiary)] hover:text-[var(--color-ink-secondary)]'
+                  )}
+                >
+                  {active === item.id && (
+                    <motion.div
+                      layoutId="mobile-indicator"
+                      className="absolute left-0 top-1/2 h-4 w-[2px] -translate-y-1/2 rounded-[1px] bg-[var(--color-ink-secondary)]"
+                    />
+                  )}
+                  {t(item.id as Parameters<typeof t>[0])}
+                </motion.a>
+              ))}
             </nav>
 
-            {/* Explicit Close Button inside Menu Overlay */}
-            <motion.button
-              initial={{ opacity: 0, scale: 0.5 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.5 }}
-              onClick={() => setMobileMenuOpen(false)}
-              className="absolute top-6 right-6 p-4 rounded-full bg-white/10 text-white z-20 hover:bg-white/20 active:scale-90 transition-all border border-white/20"
-            >
-              <X className="w-4 h-4" />
-            </motion.button>
+            <div className="mt-auto border-t border-[var(--color-border-subtle)] px-6 py-6">
+              {/* Language toggle — mobile */}
+              <div className="mb-5">
+                <LanguageToggle />
+              </div>
 
-
-            {/* Close functionality via header button (which is z-70 above this z-65 overlay) */}
+              {/* NavCTA — mobile */}
+              <a
+                href={whatsappUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => setMobileOpen(false)}
+                className="inline-flex w-full items-center justify-center rounded-lg border border-[var(--color-border-strong)] py-3 text-[14px] font-medium text-[var(--color-ink-secondary)] transition-[border-color,background-color] duration-[220ms] [transition-timing-function:var(--ease-out-quart)] hover:border-[var(--color-ink-secondary)] hover:bg-[var(--color-surface-raised)]"
+              >
+                {t('cta')}
+              </a>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
     </>
-  );
+  )
 }
