@@ -1,66 +1,146 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
-@theme inline {
-  /* Fuentes de marca */
-  --font-sans: var(--font-jakarta);
-  --font-display: var(--font-outfit);
+@theme {
+  /* ===== Surfaces ===== */
+  --color-surface-base: oklch(0.96 0.012 80);
+  --color-surface-raised: oklch(0.98 0.008 80);
+  --color-surface-recessed: oklch(0.94 0.014 80);
+  --color-surface-deep: oklch(0.91 0.018 80);
 
-  /* Colores de marca basados en tu lib/site.ts */
-  --color-brand-blue: #0062cc;
-  --color-brand-cyan: #23ADCF;
-  --color-brand-dark: #030712;
+  /* ===== Ink ===== */
+  --color-ink-primary: oklch(0.20 0.05 264);
+  --color-ink-secondary: oklch(0.30 0.06 264);
+  --color-ink-tertiary: oklch(0.42 0.025 264);
+  --color-ink-quaternary: oklch(0.58 0.018 264);
 
-  /* Radios personalizados */
-  --radius-xl: 1rem;
-  --radius-2xl: 1.5rem;
+  /* ===== Borders ===== */
+  --color-border-subtle: oklch(0.88 0.008 264);
+  --color-border-default: oklch(0.82 0.012 264);
+  --color-border-strong: oklch(0.65 0.015 264);
+
+  /* ===== Accent (uso restringido — ver DESIGN.md sección 2) ===== */
+  --color-accent: oklch(0.72 0.10 80);
+  --color-accent-deep: oklch(0.55 0.10 70);
+
+  /* ===== Semantic ===== */
+  --color-success: oklch(0.55 0.10 150);
+  --color-warning: oklch(0.70 0.10 50);
+  --color-danger: oklch(0.50 0.15 25);
+  --color-info: oklch(0.60 0.10 230);
+
+  /* ===== WhatsApp green (canónico, solo para icono) ===== */
+  --color-whatsapp: oklch(0.62 0.16 145);
+
+  /* ===== Fonts ===== */
+  --font-display: var(--font-fraunces), serif;
+  --font-sans: var(--font-geist-sans), system-ui, sans-serif;
+
+  /* ===== Section padding (3 tiers) ===== */
+  --padding-section-narrative: 8rem;
+  --padding-section-standard: 6rem;
+  --padding-section-transitional: 5rem;
+  --padding-section-narrative-mobile: 5rem;
+  --padding-section-standard-mobile: 4rem;
+  --padding-section-transitional-mobile: 3.5rem;
+
+  /* ===== Tracking ===== */
+  --tracking-eyebrow: 0.08em;
+
+  /* ===== Motion: durations ===== */
+  --duration-micro: 120ms;
+  --duration-short: 220ms;
+  --duration-medium: 400ms;
+  --duration-long: 700ms;
+
+  /* ===== Motion: easings ===== */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+
+  /* ===== Layout: max widths ===== */
+  --max-page: 80rem;        /* 1280px */
+  --max-content: 68.75rem;  /* 1100px */
+  --max-prose: 42.5rem;     /* 680px  */
+  --max-hero: 68.75rem;     /* 1100px */
+
+  /* ===== Shadows ===== */
+  --shadow-subtle: 0 1px 2px oklch(0.20 0.05 264 / 0.04);
+  --shadow-raised: 0 4px 16px oklch(0.20 0.05 264 / 0.06);
+
+  /* ===== Heights ===== */
+  --height-18: 4.5rem; /* 72px — navbar xl */
 }
 
-/* Configuración base del documento */
-@layer base {
-  html {
-    @apply scroll-smooth overflow-x-hidden;
-  }
-  
-  body {
-    @apply bg-[#030712] text-white w-full overflow-x-hidden relative antialiased;
-    font-family: var(--font-jakarta), system-ui, sans-serif;
-  }
+/* ===== Defaults del body y headings ===== */
 
-  * {
-    @apply border-white/10;
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-surface-base);
+  color: var(--color-ink-primary);
+  font-size: 1rem;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  font-variation-settings: 'opsz' 144, 'SOFT' 50, 'wght' 500;
+  color: var(--color-ink-secondary);
+}
+
+html {
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+}
+
+* {
+  border-color: var(--color-border-subtle);
+}
+
+/* ===== Section edge lines for large viewports ===== */
+
+.section-edge {
+  position: relative;
+}
+
+.section-edge::before,
+.section-edge::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--color-border-subtle);
+  opacity: 0;
+  transition: opacity 320ms;
+  pointer-events: none;
+}
+
+.section-edge::before {
+  left: max(0px, calc((100vw - var(--max-content) - 4rem) / 2));
+}
+
+.section-edge::after {
+  right: max(0px, calc((100vw - var(--max-content) - 4rem) / 2));
+}
+
+@media (min-width: 1240px) {
+  .section-edge::before,
+  .section-edge::after {
+    opacity: 1;
   }
 }
 
-/* ==========================================
-   COMPONENTES DE ALTO IMPACTO (OwlyDev)
-   ========================================== */
+/* ===== prefers-reduced-motion safety net ===== */
 
-@layer components {
-  /* Video Background optimizado */
-  .hero-video-bg {
-    @apply absolute top-1/2 left-1/2 w-full h-full -translate-x-1/2 -translate-y-1/2 object-cover pointer-events-none z-0;
-    filter: brightness(0.5) contrast(1.1);
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
-
-  /* Gradiente de texto reutilizable */
-  .text-gradient {
-    @apply bg-gradient-to-r from-[#23ADCF] to-[#0062cc] bg-clip-text text-transparent;
-  }
-
-  /* Marquee para el carrusel de demos */
-  .owly-marquee {
-    animation: marquee 25s linear infinite;
-    @apply flex w-max;
-  }
-}
-
-@keyframes marquee {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
-}
-
-/* Utilidades específicas */
-.font-display {
-  font-family: var(--font-outfit), sans-serif;
 }
