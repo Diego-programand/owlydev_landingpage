@@ -1,0 +1,90 @@
+{
+  "nav": {
+    "hero": "Inicio",
+    "why-us": "¿Por qué nosotros?",
+    "services": "Servicios",
+    "portfolio": "Portfolio",
+    "faq": "FAQ",
+    "contact": "Contacto",
+    "cta": "Hablemos"
+  },
+  "hero": {
+    "eyebrow": "Sistemas para PyMEs",
+    "headline": "Tu operación no puede vivir en WhatsApp",
+    "subhead": "OwlyDev construye el sistema central que reemplaza los parches y da control real sobre el negocio.",
+    "ctaPrimary": "Hablemos",
+    "ctaSecondary": "Ver proyectos →",
+    "whatsappUrl": "https://wa.me/573028584906?text=Hola%2C+quiero+saber+m%C3%A1s+sobre+OwlyDev",
+    "mascotAlt": "Mascota de OwlyDev saludando"
+  },
+  "whyUs": {
+    "eyebrow": "Sin promesas vacías",
+    "heading": "Lo que otros no garantizan",
+    "items": [
+      { "number": "01", "headline": "Precio claro desde el principio", "copy": "Sin cotizaciones que cambian. El alcance, el costo y el plazo van por escrito antes de arrancar." },
+      { "number": "02", "headline": "El código es tuyo", "copy": "El repositorio, el dominio y el panel quedan a tu nombre desde el primer día. Sin dependencias, sin rehenes." },
+      { "number": "03", "headline": "Diseñado para quien lo opera", "copy": "Cada pantalla se construye para el equipo que ya tienes. Sin jerga de programadores, sin capacitación externa, sin manuales de 80 páginas." },
+      { "number": "04", "headline": "Métricas reales antes de cotizar", "copy": "Antes de proponer nada, se mapea qué proceso manual está costando más. El sistema ataca ese punto primero." }
+    ]
+  },
+  "services": {
+    "eyebrow": "Qué construye OwlyDev",
+    "heading": "Software que reemplaza los parches",
+    "items": [
+      {
+        "number": "01",
+        "headline": "Paneles y dashboards a medida",
+        "hook": "Si tu equipo opera en WhatsApp, hojas de cálculo o grupos de chat, cada día sin sistema es un error esperando pasar.",
+        "copy": "Un sistema central donde todo el equipo opera: inventario, pedidos, reportes y métricas en una sola pantalla. Construido para el negocio, no para un demo."
+      },
+      {
+        "number": "02",
+        "headline": "E-commerce con operaciones integradas",
+        "hook": "Tener tienda online y manejar el inventario en otro lado es operar con una mano atada.",
+        "copy": "Tienda online conectada directamente al inventario, los despachos y la facturación. Sin exportar Excel entre plataformas."
+      },
+      {
+        "number": "03",
+        "headline": "IA integrada en tus sistemas",
+        "hook": "La IA no requiere cambiar todo lo que ya funciona. Requiere conectarla a lo que ya tienes.",
+        "copy": "Automatizaciones, chatbots y análisis de datos que trabajan dentro del sistema que ya tienes. Sin cambiar herramientas, sin reentrenar al equipo."
+      }
+    ]
+  },
+  "portfolio": {
+    "eyebrow": "Proyectos representativos",
+    "heading": "Lo que se puede construir"
+  },
+  "pricing": {
+    "eyebrow": "Qué cuesta no tener un sistema",
+    "heading": "El desorden también tiene precio",
+    "disclaimer": "Los precios son puntos de partida. Cada proyecto se cotiza según el alcance real.",
+    "badge": "Recomendado"
+  },
+  "testimonials": {
+    "eyebrow": "Lo que dicen quienes ya lo tienen",
+    "heading": "Resultados que se miden"
+  },
+  "faq": {
+    "eyebrow": "Preguntas frecuentes",
+    "heading": "Lo que siempre preguntan antes de arrancar",
+    "subtext": "Si tienes una duda que no está acá, el búho responde por WhatsApp."
+  },
+  "cta": {
+    "eyebrow": "El primer paso no cuesta nada",
+    "heading": "Cuéntanos cómo opera tu negocio",
+    "subtext": "En una llamada de 30 minutos identificamos si hay un sistema que pueda ahorrarle tiempo real a tu equipo.",
+    "button": "Hablemos por WhatsApp",
+    "trustLine": "Sin compromiso. Sin tecnicismos. Solo una conversación."
+  },
+  "footer": {
+    "tagline": "Software a medida para negocios que quieren operar mejor.",
+    "copyright": "© 2025 OwlyDev. Todos los derechos reservados.",
+    "madeIn": "Hecho en Medellín, Colombia."
+  },
+  "confirmation": {
+    "heading": "Ya casi.",
+    "body": "El mensaje ya está listo en WhatsApp. En menos de 24 horas respondemos para agendar una llamada y entender qué necesita tu negocio.",
+    "backLink": "← Volver al inicio"
+  }
+}

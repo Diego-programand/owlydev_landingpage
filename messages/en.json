@@ -1,0 +1,90 @@
+{
+  "nav": {
+    "hero": "Home",
+    "why-us": "Why us?",
+    "services": "Services",
+    "portfolio": "Portfolio",
+    "faq": "FAQ",
+    "contact": "Contact",
+    "cta": "Let's talk"
+  },
+  "hero": {
+    "eyebrow": "Built for your team",
+    "headline": "Your business can't keep running on group chats",
+    "subhead": "OwlyDev builds the central system that replaces the workarounds and puts you back in control.",
+    "ctaPrimary": "Let's talk",
+    "ctaSecondary": "See our work →",
+    "whatsappUrl": "https://wa.me/573028584906?text=Hi%2C+I'd+like+to+know+more+about+OwlyDev",
+    "mascotAlt": "OwlyDev mascot waving hello"
+  },
+  "whyUs": {
+    "eyebrow": "Substance, not pitch",
+    "heading": "What other agencies won't promise",
+    "items": [
+      { "number": "01", "headline": "Pricing set before work starts", "copy": "No scope creep, no surprise invoices. Cost and timeline are fixed in writing before a single line gets coded." },
+      { "number": "02", "headline": "Your code, your domain, always", "copy": "The codebase, the domain, and the admin panel are registered to you from day one. No lock-in, no leverage." },
+      { "number": "03", "headline": "Built for the team using it", "copy": "Every screen is built for the person who will actually click it daily. No developer training, no 80-page manual." },
+      { "number": "04", "headline": "ROI identified before we quote", "copy": "Before proposing anything, we map which manual process costs the most. The software fixes that first." }
+    ]
+  },
+  "services": {
+    "eyebrow": "What OwlyDev builds",
+    "heading": "Software that replaces the workarounds",
+    "items": [
+      {
+        "number": "01",
+        "headline": "Custom admin panels and dashboards",
+        "hook": "If your team runs on group chats and spreadsheets, every day without a system is a mistake waiting to happen.",
+        "copy": "A central system where your whole team operates: inventory, orders, reports, and metrics in one screen. Built for your business, not for a demo."
+      },
+      {
+        "number": "02",
+        "headline": "E-commerce with integrated operations",
+        "hook": "Running an online store while managing inventory somewhere else means operating with one hand tied.",
+        "copy": "An online store connected directly to inventory, fulfillment, and billing. No more exporting spreadsheets between platforms."
+      },
+      {
+        "number": "03",
+        "headline": "AI integrated into your existing systems",
+        "hook": "AI doesn't require replacing what already works. It requires connecting to what you already have.",
+        "copy": "Automations, chatbots, and data analysis working inside the tools you already have. No new platforms, no retraining your team."
+      }
+    ]
+  },
+  "portfolio": {
+    "eyebrow": "Representative projects",
+    "heading": "What gets built"
+  },
+  "pricing": {
+    "eyebrow": "What no system actually costs",
+    "heading": "The mess has a price too",
+    "disclaimer": "Prices are starting points. Every project is scoped and quoted individually.",
+    "badge": "Recommended"
+  },
+  "testimonials": {
+    "eyebrow": "From people who already have it",
+    "heading": "Results that can be measured"
+  },
+  "faq": {
+    "eyebrow": "Frequently asked questions",
+    "heading": "What people always ask before starting",
+    "subtext": "If your question isn't here, the owl answers on WhatsApp."
+  },
+  "cta": {
+    "eyebrow": "The first step costs nothing",
+    "heading": "Tell us how your business operates",
+    "subtext": "In a 30-minute call we'll identify whether there's a system that can save your team real time.",
+    "button": "Talk to us on WhatsApp",
+    "trustLine": "No commitment. No jargon. Just a conversation."
+  },
+  "footer": {
+    "tagline": "Custom software for businesses that want to run better.",
+    "copyright": "© 2025 OwlyDev. All rights reserved.",
+    "madeIn": "Made in Medellín, Colombia."
+  },
+  "confirmation": {
+    "heading": "Almost there.",
+    "body": "Your message is ready in WhatsApp. We'll get back to you within 24 hours to schedule a call and understand what your business needs.",
+    "backLink": "← Back to home"
+  }
+}
