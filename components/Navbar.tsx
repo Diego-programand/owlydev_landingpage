@@ -2,7 +2,7 @@
 
 import { useMemo, useState, useEffect } from 'react'
 import Image from 'next/image'
-import { useRouter, usePathname } from 'next/navigation'
+import { useRouter, usePathname } from '@/i18n/navigation'
 import { useLocale, useTranslations } from 'next-intl'
 import { m, AnimatePresence, useScroll, useMotionValueEvent } from 'framer-motion'
 import { Menu, X } from 'lucide-react'
@@ -28,12 +28,7 @@ function LanguageToggle() {
 
   function switchLocale(newLocale: 'es' | 'en') {
     if (newLocale === locale) return
-    const newPath =
-      newLocale === routing.defaultLocale
-        ? pathname.replace(/^\/en/, '') || '/'
-        : `/en${pathname}`
-    router.push(newPath)
-    router.refresh()
+    router.push(pathname, { locale: newLocale })
   }
 
   return (
