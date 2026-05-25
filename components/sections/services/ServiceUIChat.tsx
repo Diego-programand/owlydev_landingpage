@@ -39,7 +39,7 @@ export function ServiceUIChat() {
       opacity: 1, 
       y: 0, 
       scale: 1,
-      transition: { type: 'spring', stiffness: 260, damping: 22 }
+      transition: { type: 'spring' as const, stiffness: 260, damping: 22 }
     }
   }
 
@@ -49,7 +49,7 @@ export function ServiceUIChat() {
       transition: {
         duration: 0.6,
         repeat: Infinity,
-        ease: 'easeInOut'
+        ease: 'easeInOut' as const
       }
     }
   }
