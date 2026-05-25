@@ -1,8 +1,7 @@
 'use client'
 
-import { useRef } from 'react'
 import Image from 'next/image'
-import { motion, useInView, useReducedMotion } from 'framer-motion'
+import { m, useReducedMotion } from 'framer-motion'
 import { useTranslations } from 'next-intl'
 import { cn } from '@/lib/utils'
 import { type ServiceVisual } from '@/lib/services-content'
@@ -56,15 +55,12 @@ function ServiceRow({ number, headline, hook, copy, visual, reversed, reducedMot
     visible: {
       opacity: 1,
       y: 0,
-      transition: {
-        duration: reducedMotion ? 0.12 : 0.5,
-        ease: EASE_OUT_EXPO,
-      },
+      transition: { duration: reducedMotion ? 0.12 : 0.5, ease: EASE_OUT_EXPO },
     },
   }
 
   return (
-    <motion.div
+    <m.div
       variants={rowVariant}
       className={cn(
         'flex flex-col gap-6 border-t border-[var(--color-border-subtle)] py-10',
@@ -96,13 +92,11 @@ function ServiceRow({ number, headline, hook, copy, visual, reversed, reducedMot
       <div className={cn(reversed ? 'lg:flex-[60]' : 'lg:flex-[40]')}>
         <ServiceVisualEl type={visual} />
       </div>
-    </motion.div>
+    </m.div>
   )
 }
 
 export function ServicesItems() {
-  const ref = useRef<HTMLDivElement>(null)
-  const inView = useInView(ref, { once: true, amount: 0.1 })
   const reducedMotion = useReducedMotion()
   const t = useTranslations('services')
   const rawItems = t.raw('items') as ServiceItem[]
@@ -111,19 +105,16 @@ export function ServicesItems() {
   const containerVariants = {
     hidden: {},
     visible: {
-      transition: {
-        staggerChildren: 0.12,
-        delayChildren: 0.1,
-      },
+      transition: { staggerChildren: 0.12, delayChildren: 0.1 },
     },
   }
 
   return (
-    <motion.div
-      ref={ref}
+    <m.div
       variants={containerVariants}
       initial="hidden"
-      animate={inView ? 'visible' : 'hidden'}
+      whileInView="visible"
+      viewport={{ once: true, amount: 0.1 }}
     >
       {services.map((service, i) => (
         <ServiceRow
@@ -137,6 +128,6 @@ export function ServicesItems() {
           reducedMotion={reducedMotion}
         />
       ))}
-    </motion.div>
+    </m.div>
   )
 }

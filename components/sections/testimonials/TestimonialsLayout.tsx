@@ -1,8 +1,7 @@
 'use client'
 
-import { useRef } from 'react'
 import Image from 'next/image'
-import { motion, useInView, useReducedMotion } from 'framer-motion'
+import { m, useReducedMotion } from 'framer-motion'
 import { useTranslations, useLocale } from 'next-intl'
 import { testimonialsContent, type Testimonial } from '@/lib/testimonials-content'
 
@@ -24,7 +23,7 @@ function TestimonialItem({ testimonial, reducedMotion }: TestimonialItemProps) {
   }
 
   return (
-    <motion.div variants={itemVariant} className="border-t border-[var(--color-border-subtle)] py-8">
+    <m.div variants={itemVariant} className="border-t border-[var(--color-border-subtle)] py-8">
       <blockquote
         className="text-[20px] leading-[1.5] text-[var(--color-ink-secondary)]"
         style={{
@@ -38,13 +37,11 @@ function TestimonialItem({ testimonial, reducedMotion }: TestimonialItemProps) {
       <p className="mt-3 text-[13px] text-[var(--color-ink-quaternary)]">
         {testimonial.author} · {testimonial.role} · {testimonial.company}
       </p>
-    </motion.div>
+    </m.div>
   )
 }
 
 export function TestimonialsLayout() {
-  const ref = useRef<HTMLDivElement>(null)
-  const inView = useInView(ref, { once: true, amount: 0.1 })
   const reducedMotion = useReducedMotion()
   const t = useTranslations('testimonials')
   const locale = useLocale()
@@ -53,10 +50,7 @@ export function TestimonialsLayout() {
   const listVariants = {
     hidden: {},
     visible: {
-      transition: {
-        staggerChildren: 0.10,
-        delayChildren: 0.15,
-      },
+      transition: { staggerChildren: 0.10, delayChildren: 0.15 },
     },
   }
 
@@ -69,23 +63,26 @@ export function TestimonialsLayout() {
   }
 
   return (
-    <div
-      ref={ref}
-      className="flex flex-col gap-10 lg:flex-row lg:items-start lg:gap-16"
-    >
-      <motion.div
+    <div className="flex flex-col gap-10 lg:flex-row lg:items-start lg:gap-16">
+      <m.div
         variants={mascotVariant}
         initial="hidden"
-        animate={inView ? 'visible' : 'hidden'}
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.1 }}
         className="flex flex-col items-center gap-6 lg:w-[35%] lg:self-start lg:sticky lg:top-32"
       >
-        <Image
-          src="/mascota-aprobacion.webp"
-          alt="OwlyDev approval"
-          width={280}
-          height={320}
-          className="w-full max-w-[200px] lg:max-w-[280px]"
-        />
+        <m.div
+          animate={reducedMotion ? undefined : { y: [0, -4, 0] }}
+          transition={{ duration: 4, ease: 'easeInOut', repeat: Infinity }}
+        >
+          <Image
+            src="/mascota-aprobacion.webp"
+            alt="OwlyDev approval"
+            width={280}
+            height={320}
+            className="w-full max-w-[200px] lg:max-w-[280px]"
+          />
+        </m.div>
         <div className="text-center lg:text-left">
           <p
             className="mb-3 text-[12px] font-medium uppercase text-[var(--color-ink-quaternary)]"
@@ -100,18 +97,19 @@ export function TestimonialsLayout() {
             {t('heading')}
           </h2>
         </div>
-      </motion.div>
+      </m.div>
 
-      <motion.div
+      <m.div
         variants={listVariants}
         initial="hidden"
-        animate={inView ? 'visible' : 'hidden'}
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.1 }}
         className="lg:flex-1"
       >
         {testimonials.map((testimonial) => (
           <TestimonialItem key={testimonial.id} testimonial={testimonial} reducedMotion={reducedMotion} />
         ))}
-      </motion.div>
+      </m.div>
     </div>
   )
 }

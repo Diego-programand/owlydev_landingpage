@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation'
 import { GeistSans } from 'geist/font/sans'
 import { fraunces } from '../fonts'
 import Footer from '@/components/Footer'
+import { MotionProvider } from '@/components/MotionProvider'
 import { routing } from '@/i18n/routing'
 import '../globals.css'
 
@@ -127,8 +128,10 @@ export default async function LocaleLayout({
           }}
         />
         <NextIntlClientProvider messages={messages}>
-          {children}
-          <Footer />
+          <MotionProvider>
+            {children}
+            <Footer />
+          </MotionProvider>
         </NextIntlClientProvider>
       </body>
     </html>

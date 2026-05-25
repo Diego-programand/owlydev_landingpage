@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { motion, AnimatePresence, useScroll, useMotionValueEvent, useReducedMotion } from 'framer-motion'
+import { m, AnimatePresence, useScroll, useMotionValueEvent, useReducedMotion } from 'framer-motion'
 import { ChevronDown } from 'lucide-react'
 
 export function HeroScrollIndicator() {
@@ -11,7 +11,6 @@ export function HeroScrollIndicator() {
   const { scrollY } = useScroll()
 
   useEffect(() => {
-    // Empieza el loop 800ms de entrada + 400ms de animación después del mount
     const timer = setTimeout(() => setLooping(true), 1200)
     return () => clearTimeout(timer)
   }, [])
@@ -23,7 +22,7 @@ export function HeroScrollIndicator() {
   return (
     <AnimatePresence>
       {visible && (
-        <motion.div
+        <m.div
           initial={{ opacity: 0 }}
           animate={
             shouldReduceMotion
@@ -50,7 +49,7 @@ export function HeroScrollIndicator() {
             strokeWidth={1.5}
             className="text-[var(--color-ink-quaternary)]"
           />
-        </motion.div>
+        </m.div>
       )}
     </AnimatePresence>
   )

@@ -1,6 +1,7 @@
 'use client'
 
-import { motion } from 'framer-motion'
+import { useState, useEffect } from 'react'
+import { m } from 'framer-motion'
 import { WhatsAppIcon } from '@/components/ui/WhatsAppIcon'
 
 const EASE_OUT_EXPO = [0.16, 1, 0.3, 1] as const
@@ -17,26 +18,33 @@ interface HeroCTAGroupProps {
 }
 
 export function HeroCTAGroup({ copy, reducedMotion }: HeroCTAGroupProps) {
-  const fadeUp = (delay: number) =>
-    reducedMotion
-      ? {
-          initial: { opacity: 1 as number, y: 0 as number },
-          animate: { opacity: 1 as number, y: 0 as number },
-          transition: { duration: 0.12 },
-        }
-      : {
-          initial: { opacity: 0 as number, y: 8 as number },
-          animate: { opacity: 1 as number, y: 0 as number },
-          transition: {
-            duration: 0.4,
-            ease: EASE_OUT_EXPO,
-            delay: delay / 1000,
-          },
-        }
+  const [ready, setReady] = useState(false)
+
+  useEffect(() => {
+    const raf = requestAnimationFrame(() => setReady(true))
+    return () => cancelAnimationFrame(raf)
+  }, [])
+
+  const fadeUp = (delay: number) => {
+    if (reducedMotion) {
+      return {
+        initial: { opacity: 1 as number, y: 0 as number },
+        animate: { opacity: 1 as number, y: 0 as number },
+        transition: { duration: 0.12 },
+      }
+    }
+    return {
+      initial: { opacity: 0 as number, y: 8 as number },
+      animate: ready
+        ? { opacity: 1 as number, y: 0 as number }
+        : { opacity: 0 as number, y: 8 as number },
+      transition: { duration: 0.4, ease: EASE_OUT_EXPO, delay: delay / 1000 },
+    }
+  }
 
   return (
     <div className="flex flex-col items-start gap-3 pt-3">
-      <motion.a
+      <m.a
         {...fadeUp(480)}
         href={copy.whatsappUrl}
         target="_blank"
@@ -45,9 +53,9 @@ export function HeroCTAGroup({ copy, reducedMotion }: HeroCTAGroupProps) {
       >
         <WhatsAppIcon size={18} className="shrink-0 text-[var(--color-whatsapp)]" />
         {copy.ctaPrimary}
-      </motion.a>
+      </m.a>
 
-      <motion.a
+      <m.a
         {...fadeUp(560)}
         href="#portfolio"
         className="group relative inline-block text-[14px] text-[var(--color-ink-tertiary)]"
@@ -57,7 +65,7 @@ export function HeroCTAGroup({ copy, reducedMotion }: HeroCTAGroupProps) {
           aria-hidden
           className="absolute bottom-0 left-0 h-px w-full origin-left scale-x-0 bg-current transition-transform duration-[220ms] [transition-timing-function:var(--ease-out-quart)] group-hover:scale-x-100"
         />
-      </motion.a>
+      </m.a>
     </div>
   )
 }

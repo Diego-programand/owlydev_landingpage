@@ -4,7 +4,7 @@ import { useMemo, useState, useEffect } from 'react'
 import Image from 'next/image'
 import { useRouter, usePathname } from 'next/navigation'
 import { useLocale, useTranslations } from 'next-intl'
-import { motion, AnimatePresence, useScroll, useMotionValueEvent } from 'framer-motion'
+import { m, AnimatePresence, useScroll, useMotionValueEvent } from 'framer-motion'
 import { Menu, X } from 'lucide-react'
 import { navItems } from '@/lib/site'
 import { useActiveSection } from '@/hooks/useActiveSection'
@@ -143,7 +143,7 @@ export default function Navbar() {
               >
                 {t(item.id as Parameters<typeof t>[0])}
                 {active === item.id && (
-                  <motion.div
+                  <m.div
                     layoutId="nav-indicator"
                     className="absolute inset-x-3 -bottom-px h-[2px] rounded-[1px] bg-[var(--color-ink-secondary)]"
                     transition={{ duration: 0.25, ease: EASE_OUT_EXPO }}
@@ -170,7 +170,7 @@ export default function Navbar() {
               {t('cta')}
             </a>
 
-            {/* Hamburger — mobile */}
+            {/* Hamburger — mobile. initial={false} en AnimatePresence evita el flash del icono inicial */}
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
               aria-label={mobileOpen ? 'Cerrar menú' : 'Abrir menú'}
@@ -180,7 +180,7 @@ export default function Navbar() {
             >
               <AnimatePresence mode="wait" initial={false}>
                 {mobileOpen ? (
-                  <motion.div
+                  <m.div
                     key="close"
                     initial={{ rotate: -90, opacity: 0 }}
                     animate={{ rotate: 0, opacity: 1 }}
@@ -188,9 +188,9 @@ export default function Navbar() {
                     transition={{ duration: 0.15 }}
                   >
                     <X size={20} strokeWidth={1.5} />
-                  </motion.div>
+                  </m.div>
                 ) : (
-                  <motion.div
+                  <m.div
                     key="menu"
                     initial={{ rotate: 90, opacity: 0 }}
                     animate={{ rotate: 0, opacity: 1 }}
@@ -198,7 +198,7 @@ export default function Navbar() {
                     transition={{ duration: 0.15 }}
                   >
                     <Menu size={20} strokeWidth={1.5} />
-                  </motion.div>
+                  </m.div>
                 )}
               </AnimatePresence>
             </button>
@@ -209,7 +209,7 @@ export default function Navbar() {
       {/* Mobile menu */}
       <AnimatePresence>
         {mobileOpen && (
-          <motion.div
+          <m.div
             id="mobile-menu"
             role="dialog"
             aria-modal="true"
@@ -222,7 +222,7 @@ export default function Navbar() {
           >
             <nav className="flex flex-col px-6 py-6">
               {navItems.map((item, i) => (
-                <motion.a
+                <m.a
                   key={item.id}
                   href={`#${item.id}`}
                   initial={{ opacity: 0, y: 10 }}
@@ -245,13 +245,13 @@ export default function Navbar() {
                   )}
                 >
                   {active === item.id && (
-                    <motion.div
+                    <m.div
                       layoutId="mobile-indicator"
                       className="absolute left-0 top-1/2 h-4 w-[2px] -translate-y-1/2 rounded-[1px] bg-[var(--color-ink-secondary)]"
                     />
                   )}
                   {t(item.id as Parameters<typeof t>[0])}
-                </motion.a>
+                </m.a>
               ))}
             </nav>
 
@@ -272,7 +272,7 @@ export default function Navbar() {
                 {t('cta')}
               </a>
             </div>
-          </motion.div>
+          </m.div>
         )}
       </AnimatePresence>
     </>

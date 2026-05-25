@@ -1,18 +1,30 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import Image from 'next/image'
-import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion'
+import { m, useScroll, useTransform, useReducedMotion } from 'framer-motion'
 
 export function HeroMascot() {
   const shouldReduceMotion = useReducedMotion()
+  const [ready, setReady] = useState(false)
   const { scrollY } = useScroll()
-  // parallax: mascota sube al 30% de la velocidad del scroll
   const y = useTransform(scrollY, [0, 600], [0, -180])
 
+  useEffect(() => {
+    const raf = requestAnimationFrame(() => setReady(true))
+    return () => cancelAnimationFrame(raf)
+  }, [])
+
   return (
-    <motion.div
+    <m.div
       initial={shouldReduceMotion ? { opacity: 1, x: 0 } : { opacity: 0, x: 24 }}
-      animate={{ opacity: 1, x: 0 }}
+      animate={
+        shouldReduceMotion
+          ? { opacity: 1, x: 0 }
+          : ready
+            ? { opacity: 1, x: 0 }
+            : { opacity: 0, x: 24 }
+      }
       transition={
         shouldReduceMotion
           ? { duration: 0.12 }
@@ -30,6 +42,6 @@ export function HeroMascot() {
         className="w-full max-w-[280px] lg:max-w-[440px]"
         style={{ height: 'auto' }}
       />
-    </motion.div>
+    </m.div>
   )
 }

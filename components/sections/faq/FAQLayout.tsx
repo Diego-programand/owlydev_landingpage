@@ -1,7 +1,7 @@
 'use client'
 
-import { useState, useRef } from 'react'
-import { motion, AnimatePresence, useInView, useReducedMotion } from 'framer-motion'
+import { useState } from 'react'
+import { m, AnimatePresence, useReducedMotion } from 'framer-motion'
 import { Plus } from 'lucide-react'
 import { useTranslations, useLocale } from 'next-intl'
 import { faqContent } from '@/lib/faq-content'
@@ -23,23 +23,23 @@ function FAQItem({ question, answer, isOpen, onToggle, reducedMotion }: FAQItemP
       <button
         onClick={onToggle}
         aria-expanded={isOpen}
-        className="flex w-full items-start justify-between gap-4 py-5 text-left"
+        className="group flex w-full items-start justify-between gap-4 py-5 text-left"
       >
-        <span className="text-[16px] font-medium leading-[1.4] text-[var(--color-ink-secondary)]">
+        <span className="text-[16px] font-medium leading-[1.4] text-[var(--color-ink-secondary)] transition-colors duration-[120ms] group-hover:text-[var(--color-ink-primary)]">
           {question}
         </span>
-        <motion.span
+        <m.span
           animate={{ rotate: isOpen ? 45 : 0 }}
           transition={{ duration: reducedMotion ? 0.12 : 0.22, ease: EASE_OUT_QUART }}
           className="mt-0.5 shrink-0 text-[var(--color-ink-tertiary)]"
         >
           <Plus size={16} strokeWidth={1.5} />
-        </motion.span>
+        </m.span>
       </button>
 
       <AnimatePresence initial={false}>
         {isOpen && (
-          <motion.div
+          <m.div
             key="content"
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
@@ -50,7 +50,7 @@ function FAQItem({ question, answer, isOpen, onToggle, reducedMotion }: FAQItemP
             <p className="pb-5 text-[15px] leading-[1.65] text-[var(--color-ink-tertiary)]">
               {answer}
             </p>
-          </motion.div>
+          </m.div>
         )}
       </AnimatePresence>
     </div>
@@ -59,8 +59,6 @@ function FAQItem({ question, answer, isOpen, onToggle, reducedMotion }: FAQItemP
 
 export function FAQLayout() {
   const [openIndex, setOpenIndex] = useState<number | null>(0)
-  const ref = useRef<HTMLDivElement>(null)
-  const inView = useInView(ref, { once: true, amount: 0.1 })
   const reducedMotion = useReducedMotion()
   const t = useTranslations('faq')
   const locale = useLocale()
@@ -76,14 +74,12 @@ export function FAQLayout() {
   }
 
   return (
-    <div
-      ref={ref}
-      className="flex flex-col gap-10 lg:flex-row lg:items-start lg:gap-16"
-    >
-      <motion.div
+    <div className="flex flex-col gap-10 lg:flex-row lg:items-start lg:gap-16">
+      <m.div
         variants={headerVariant}
         initial="hidden"
-        animate={inView ? 'visible' : 'hidden'}
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.1 }}
         className="flex flex-col gap-4 lg:w-[40%] lg:self-start lg:sticky lg:top-32"
       >
         <p
@@ -101,7 +97,7 @@ export function FAQLayout() {
         <p className="text-[14px] leading-[1.6] text-[var(--color-ink-tertiary)]">
           {t('subtext')}
         </p>
-      </motion.div>
+      </m.div>
 
       <div className="lg:flex-1">
         {items.map((item, i) => (

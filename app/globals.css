@@ -132,6 +132,64 @@ html {
   }
 }
 
+/* ===== Keyframes de animaciones continuas ===== */
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.35; }
+}
+
+.animate-pulse-dot {
+  animation: pulse-dot 2.5s ease-in-out infinite;
+}
+
+@keyframes blink-cursor {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
+.animate-cursor {
+  display: inline-block;
+  width: 2px;
+  height: 14px;
+  background-color: var(--color-ink-quaternary);
+  margin-left: 2px;
+  vertical-align: middle;
+  animation: blink-cursor 0.8s step-end 3;
+  animation-fill-mode: forwards;
+  animation-delay: 0.5s;
+  opacity: 0;
+}
+
+@keyframes shimmer-border {
+  0%   { transform: translateY(0%); }
+  100% { transform: translateY(350%); }
+}
+
+.pricing-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.pricing-shimmer::before {
+  content: '';
+  position: absolute;
+  top: -100%;
+  left: -1px;
+  right: -1px;
+  height: 60%;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    oklch(0.72 0.10 80 / 0.22) 40%,
+    oklch(0.72 0.10 80 / 0.22) 60%,
+    transparent 100%
+  );
+  animation: shimmer-border 4s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+
 /* ===== prefers-reduced-motion safety net ===== */
 
 @media (prefers-reduced-motion: reduce) {

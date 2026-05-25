@@ -1,7 +1,6 @@
 'use client'
 
-import { useRef } from 'react'
-import { motion, useInView, useReducedMotion } from 'framer-motion'
+import { m, useReducedMotion } from 'framer-motion'
 import { useLocale } from 'next-intl'
 import { cn } from '@/lib/utils'
 import { pricingContent, type PricingColumnData } from '@/lib/pricing-content'
@@ -33,12 +32,13 @@ function PricingColumn({ column, reducedMotion }: PricingColumnProps) {
   }
 
   return (
-    <motion.div
+    <m.div
       variants={colVariant}
       className={cn(
         'relative flex flex-col rounded-xl p-6',
         column.id === 'no-system' && 'bg-[var(--color-surface-recessed)]',
         column.id === 'recommended' && [
+          'pricing-shimmer',
           'border border-[var(--color-accent)]',
           'bg-[var(--color-surface-raised)]',
           'shadow-[var(--shadow-raised)]',
@@ -150,13 +150,11 @@ function PricingColumn({ column, reducedMotion }: PricingColumnProps) {
       )}
 
       {!column.cta && <div className="mt-auto pt-6" />}
-    </motion.div>
+    </m.div>
   )
 }
 
 export function PricingColumns() {
-  const ref = useRef<HTMLDivElement>(null)
-  const inView = useInView(ref, { once: true, amount: 0.1 })
   const reducedMotion = useReducedMotion()
   const locale = useLocale()
   const { columns, disclaimer } = pricingContent[locale as 'es' | 'en']
@@ -164,25 +162,23 @@ export function PricingColumns() {
   const containerVariants = {
     hidden: {},
     visible: {
-      transition: {
-        staggerChildren: 0.12,
-        delayChildren: 0.05,
-      },
+      transition: { staggerChildren: 0.12, delayChildren: 0.05 },
     },
   }
 
   return (
-    <div ref={ref}>
-      <motion.div
+    <div>
+      <m.div
         variants={containerVariants}
         initial="hidden"
-        animate={inView ? 'visible' : 'hidden'}
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.1 }}
         className="grid grid-cols-1 gap-4 lg:grid-cols-3 lg:items-start lg:gap-6"
       >
         {columns.map((col) => (
           <PricingColumn key={col.id} column={col} reducedMotion={reducedMotion} />
         ))}
-      </motion.div>
+      </m.div>
 
       <p className="mt-8 text-center text-[13px] text-[var(--color-ink-quaternary)]">
         {disclaimer}

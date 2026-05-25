@@ -1,7 +1,6 @@
 'use client'
 
-import { useRef } from 'react'
-import { motion, useInView, useReducedMotion } from 'framer-motion'
+import { m, useReducedMotion } from 'framer-motion'
 import { useLocale } from 'next-intl'
 import { cn } from '@/lib/utils'
 import { portfolioContent, type ProjectVisual } from '@/lib/portfolio-content'
@@ -32,30 +31,18 @@ interface PortfolioRowProps {
   reducedMotion: boolean | null
 }
 
-function PortfolioRow({
-  number,
-  tag,
-  headline,
-  description,
-  tech,
-  visual,
-  reversed,
-  reducedMotion,
-}: PortfolioRowProps) {
+function PortfolioRow({ number, tag, headline, description, tech, visual, reversed, reducedMotion }: PortfolioRowProps) {
   const rowVariant = {
     hidden: { opacity: 0, y: reducedMotion ? 0 : 16 },
     visible: {
       opacity: 1,
       y: 0,
-      transition: {
-        duration: reducedMotion ? 0.12 : 0.5,
-        ease: EASE_OUT_EXPO,
-      },
+      transition: { duration: reducedMotion ? 0.12 : 0.5, ease: EASE_OUT_EXPO },
     },
   }
 
   return (
-    <motion.div
+    <m.div
       variants={rowVariant}
       className={cn(
         'flex flex-col gap-6 border-t border-[var(--color-border-subtle)] py-10',
@@ -89,7 +76,8 @@ function PortfolioRow({
           {tech.map((t) => (
             <span
               key={t}
-              className="rounded border border-[var(--color-border-subtle)] bg-[var(--color-surface-deep)] px-2 py-0.5 text-[11px] text-[var(--color-ink-quaternary)]"
+              style={{ display: 'inline-block' }}
+              className="cursor-default rounded border border-[var(--color-border-subtle)] bg-[var(--color-surface-deep)] px-2 py-0.5 text-[11px] text-[var(--color-ink-quaternary)] transition-[border-color,color,transform] duration-[120ms] hover:scale-[1.04] hover:border-[var(--color-border-strong)] hover:text-[var(--color-ink-secondary)]"
             >
               {t}
             </span>
@@ -100,13 +88,11 @@ function PortfolioRow({
       <div className={cn(reversed ? 'lg:flex-[55]' : 'lg:flex-[45]')}>
         <ProjectVisualEl type={visual} />
       </div>
-    </motion.div>
+    </m.div>
   )
 }
 
 export function PortfolioItems() {
-  const ref = useRef<HTMLDivElement>(null)
-  const inView = useInView(ref, { once: true, amount: 0.05 })
   const reducedMotion = useReducedMotion()
   const locale = useLocale()
   const { projects } = portfolioContent[locale as 'es' | 'en']
@@ -114,19 +100,16 @@ export function PortfolioItems() {
   const containerVariants = {
     hidden: {},
     visible: {
-      transition: {
-        staggerChildren: 0.10,
-        delayChildren: 0.1,
-      },
+      transition: { staggerChildren: 0.10, delayChildren: 0.1 },
     },
   }
 
   return (
-    <motion.div
-      ref={ref}
+    <m.div
       variants={containerVariants}
       initial="hidden"
-      animate={inView ? 'visible' : 'hidden'}
+      whileInView="visible"
+      viewport={{ once: true, amount: 0.05 }}
     >
       {projects.map((project, i) => (
         <PortfolioRow
@@ -141,6 +124,6 @@ export function PortfolioItems() {
           reducedMotion={reducedMotion}
         />
       ))}
-    </motion.div>
+    </m.div>
   )
 }

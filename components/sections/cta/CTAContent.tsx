@@ -3,15 +3,12 @@
 import Image from 'next/image'
 import { m, useReducedMotion } from 'framer-motion'
 import { useTranslations, useLocale } from 'next-intl'
-import { useMounted } from '@/hooks/useMounted'
 import { WhatsAppIcon } from '@/components/ui/WhatsAppIcon'
 
 const EASE_OUT_EXPO = [0.16, 1, 0.3, 1] as const
 
 export function CTAContent() {
   const reducedMotion = useReducedMotion()
-  const mounted = useMounted()
-  const isReducedMotion = mounted ? !!reducedMotion : false
   const t = useTranslations('cta')
   const locale = useLocale()
 
@@ -28,18 +25,18 @@ export function CTAContent() {
   }
 
   const itemVariant = {
-    hidden: { opacity: 0, y: isReducedMotion ? 0 : 12 },
+    hidden: { opacity: 0, y: reducedMotion ? 0 : 12 },
     visible: {
       opacity: 1,
       y: 0,
-      transition: { duration: isReducedMotion ? 0.12 : 0.5, ease: EASE_OUT_EXPO },
+      transition: { duration: reducedMotion ? 0.12 : 0.5, ease: EASE_OUT_EXPO },
     },
   }
 
   return (
     <m.div
       variants={containerVariants}
-      initial={mounted ? 'hidden' : false}
+      initial="hidden"
       whileInView="visible"
       viewport={{ once: true, amount: 0.2 }}
       className="flex flex-col items-center text-center"
@@ -79,7 +76,7 @@ export function CTAContent() {
 
       <m.div variants={itemVariant} className="mt-10">
         <div className="relative inline-flex">
-          {!isReducedMotion && (
+          {!reducedMotion && (
             <m.div
               className="absolute inset-0 rounded-lg bg-[var(--color-accent)]"
               animate={{
