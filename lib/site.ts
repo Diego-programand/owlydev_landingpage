@@ -18,7 +18,7 @@ export const navItems = [
   { id: "hero", label: "Inicio" },
   { id: "why-us", label: "¿Por qué nosotros?" },
   { id: "services", label: "Servicios" },
-  { id: "portfolio", label: "Portfolio" },
+  { id: "pricing", label: "Inversión" },
   { id: "faq", label: "FAQ" },
   { id: "contact", label: "Contacto" },
 ] as const;
